@@ -23,6 +23,7 @@ dependencies:
 - MissingH
 - ansi-terminal
 - lens
+- bytestring
 
 library:
   source-dirs: src
