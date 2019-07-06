@@ -6,11 +6,12 @@ import           Data.Array
 import           Control.Monad.State
 import           Control.Monad.Writer
 import           Data.Char
-import           System.IO.Unsafe
 import           Data.Bifunctor
 import           System.IO
 import           Data.Word                      ( Word8 )
 import           Control.Lens
+
+
 
 runBF :: String -> IO String
 runBF code =
@@ -64,6 +65,7 @@ evalOne Decr            = cell -= 1
 evalOne i@(Loop instrs) = use cell >>= \case
   0 -> pure ()
   _ -> eval instrs *> evalOne i
+
 evalOne Get = do
   c <- toEnum . ord <$> liftIO
     (putStr "Input character: " *> hFlush stdout *> getChar <* putStrLn "")
