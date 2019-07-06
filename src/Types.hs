@@ -3,9 +3,10 @@ module Types where
 import Data.Array
 import Control.Monad.State
 import Control.Monad.Writer
+import Data.Word
 
-data Memory = Memory { memory :: Array Int Int
-                     , cursor :: Int           }
+data Memory = Memory { memory :: Array Int Word8
+                     , cursor :: Int             }
 
 type Eval = StateT Memory (WriterT String IO)
 

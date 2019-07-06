@@ -1,0 +1,4 @@
+A little BrainFuck interpreter.
+Type “:q” to exit.
+
+[1;94mInput some code:[0m 

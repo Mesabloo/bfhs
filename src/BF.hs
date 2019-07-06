@@ -8,6 +8,10 @@ import Data.Char
 import System.IO.Unsafe
 import Data.Bifunctor
 import System.IO
+import Data.Text.Internal.Unsafe.Char hiding (ord)
+import Data.Bits.Extras
+import Debug.Trace
+import Data.Word()
 
 runBF :: String -> IO String
 runBF code =
@@ -57,22 +61,20 @@ evalOne Incr = modify $ \st -> st { memory = let idx = cursor st
 evalOne Decr = modify $ \st -> st { memory = let idx = cursor st
                                                  val = memory st ! idx
                                              in memory st // [(idx, val - 1)] }
-evalOne i@(Loop instrs) =
-    eval instrs
-    *> do
-        mem <- gets memory
-        idx <- gets cursor
-        
-        case mem ! idx of
-            0 -> pure ()
-            _ -> evalOne i
+evalOne i@(Loop instrs) = do
+	mem <- gets memory
+	idx <- gets cursor
+	
+	if mem ! idx == 0
+	then pure ()
+	else eval instrs *> evalOne i
 evalOne Get = do
-    c <- ord <$> liftIO (putStr "Input character: " *> hFlush stdout *> getChar <* putStrLn "")
+    c <- toEnum . ord <$> liftIO (putStr "Input character: " *> hFlush stdout *> getChar <* putStrLn "")
     modify $ \st -> st { memory = let idx = cursor st
                                   in memory st // [(idx, c)] }
 evalOne Put = do
     mem <- gets memory
     idx <- gets cursor
     
-    lift $ tell [chr (mem ! idx)]
+    lift $ tell [chr $ fromEnum (mem ! idx)]
 evalOne Null = pure ()
