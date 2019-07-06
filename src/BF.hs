@@ -56,14 +56,9 @@ cell = lens getter setter
 eval :: [Instr] -> Eval ()
 eval = mapM_ evalOne
 
-safeMove :: (Int -> Int) -> Eval ()
-safeMove f = do
-  idx <- use cursor
-  if idx == cellsNumber then cursor .= 1 else cursor .= f idx
-
 evalOne :: Instr -> Eval ()
-evalOne Next            = safeMove succ
-evalOne Prev            = safeMove pred
+evalOne Next            = cursor += 1
+evalOne Prev            = cursor -= 1
 evalOne Incr            = cell += 1
 evalOne Decr            = cell -= 1
 evalOne i@(Loop instrs) = use cell >>= \case
