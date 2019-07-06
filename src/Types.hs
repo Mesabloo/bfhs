@@ -1,12 +1,15 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Types where
 
-import Data.Array
-import Control.Monad.State
-import Control.Monad.Writer
-import Data.Word
+import           Data.Array
+import           Control.Monad.State
+import           Control.Monad.Writer
+import           Data.Word
+import           Control.Lens
 
-data Memory = Memory { memory :: Array Int Word8
-                     , cursor :: Int             }
+data Memory = Memory { _memory :: Array Int Word8
+                     , _cursor :: Int             }
+makeLenses ''Memory
 
 type Eval = StateT Memory (WriterT String IO)
 
@@ -21,5 +24,7 @@ cellsNumber :: Int
 cellsNumber = 30000
 
 initMemory :: Memory
-initMemory = Memory { memory = array (1, cellsNumber) (zip [1..] (replicate cellsNumber 0))
-                    , cursor = 1                                                            }
+initMemory = Memory
+  { _memory = array (1, cellsNumber) (zip [1 ..] (replicate cellsNumber 0))
+  , _cursor = 1
+  }
