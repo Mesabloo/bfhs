@@ -7,4 +7,7 @@ A simple brainfuck interpreter written in Haskell.
 ```bash
 $ git clone https://github.com/mesabloo/bfhs
 $ cd bfhs
-$ stack run```
+$ stack run
+# or if you are on Windows:
+$ chcp 65001 && stack run
+```
