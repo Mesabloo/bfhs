@@ -8,9 +8,6 @@ import Data.Char
 import System.IO.Unsafe
 import Data.Bifunctor
 import System.IO
-import Data.Text.Internal.Unsafe.Char hiding (ord)
-import Data.Bits.Extras
-import Debug.Trace
 import Data.Word()
 
 runBF :: String -> IO String

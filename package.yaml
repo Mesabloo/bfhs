@@ -22,8 +22,6 @@ dependencies:
 - mtl
 - MissingH
 - ansi-terminal
-- text
-- bits
 
 library:
   source-dirs: src
