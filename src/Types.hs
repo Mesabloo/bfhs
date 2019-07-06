@@ -7,7 +7,7 @@ import Control.Monad.Writer
 data Memory = Memory { memory :: Array Int Int
                      , cursor :: Int           }
 
-type Eval = StateT Memory (Writer String)
+type Eval = StateT Memory (WriterT String IO)
 
 data Instr = Next | Prev | Incr | Decr | Loop [Instr] | Get | Put | Null
     deriving (Eq, Show)

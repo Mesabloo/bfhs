@@ -7,11 +7,12 @@ import Control.Monad.Writer
 import Data.Char
 import System.IO.Unsafe
 import Data.Bifunctor
+import System.IO
 
-runBF :: String -> String
+runBF :: String -> IO String
 runBF code =
     let parsed = parse code
-    in execWriter (evalStateT (eval parsed) initMemory)
+    in execWriterT (evalStateT (eval parsed) initMemory)
 
 -- Parsing part
   
@@ -66,7 +67,7 @@ evalOne i@(Loop instrs) =
             0 -> pure ()
             _ -> evalOne i
 evalOne Get = do
-    let c = unsafePerformIO $ ord <$> (putStr "Input character: " *> liftIO getChar)
+    c <- ord <$> liftIO (putStr "Input character: " *> hFlush stdout *> getChar <* putStrLn "")
     modify $ \st -> st { memory = let idx = cursor st
                                   in memory st // [(idx, c)] }
 evalOne Put = do
