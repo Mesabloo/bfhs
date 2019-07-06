@@ -22,6 +22,7 @@ dependencies:
 - mtl
 - MissingH
 - ansi-terminal
+- lens
 
 library:
   source-dirs: src
