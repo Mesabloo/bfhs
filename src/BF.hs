@@ -5,7 +5,6 @@ import Data.Array
 import Control.Monad.State
 import Control.Monad.Writer
 import Data.Char
-import System.IO.Unsafe
 import Data.Bifunctor
 import System.IO
 import Data.Word()
@@ -50,8 +49,8 @@ eval :: [Instr] -> Eval ()
 eval = mapM_ evalOne
 
 evalOne :: Instr -> Eval ()
-evalOne Next = modify $ \st -> st { cursor = let val = cursor st in if val == cellsNumber then 1 else val + 1 }
-evalOne Prev = modify $ \st -> st { cursor = let val = cursor st in if val == 1 then cellsNumber else val - 1 }
+evalOne Next = modify $ \st -> st { cursor = let val = cursor st in val + 1 }
+evalOne Prev = modify $ \st -> st { cursor = let val = cursor st in val - 1 }
 evalOne Incr = modify $ \st -> st { memory = let idx = cursor st
                                                  val = memory st ! idx
                                              in memory st // [(idx, val + 1)] }
@@ -59,12 +58,12 @@ evalOne Decr = modify $ \st -> st { memory = let idx = cursor st
                                                  val = memory st ! idx
                                              in memory st // [(idx, val - 1)] }
 evalOne i@(Loop instrs) = do
-	mem <- gets memory
-	idx <- gets cursor
-	
-	if mem ! idx == 0
-	then pure ()
-	else eval instrs *> evalOne i
+    mem <- gets memory
+    idx <- gets cursor
+    
+    if mem ! idx == 0
+    then pure ()
+    else eval instrs *> evalOne i
 evalOne Get = do
     c <- toEnum . ord <$> liftIO (putStr "Input character: " *> hFlush stdout *> getChar <* putStrLn "")
     modify $ \st -> st { memory = let idx = cursor st
