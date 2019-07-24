@@ -18,6 +18,7 @@ import           Data.ByteString.Char8 as BS
 runBF :: ByteString -> IO ByteString
 runBF code =
   let parsed = parse code in execWriterT (evalStateT (eval parsed) initMemory)
+{-# INLINE runBF #-}
 
 -- Parsing part
 
@@ -35,6 +36,7 @@ parse bs | BS.null bs = []
     '.' -> (Put, xs)
     '[' -> let (is, rest) = parseUntil xs ']' in (Loop is, rest)
     _   -> (Null, xs)
+  {-# INLINABLE parseOne #-}
 
   parseUntil :: ByteString -> Char -> ([Instr], ByteString)
   parseUntil bs i | BS.null bs = ([], BS.empty)
@@ -44,6 +46,8 @@ parse bs | BS.null bs = []
                         in if x == i
                            then ([], xs)
                            else let (i', stream) = parseOne x xs in first (i' :) (parseUntil stream i)
+  {-# INLINABLE parseUntil #-}
+{-# INLINABLE parse #-}
 
 cell :: Lens' Memory Word8
 cell = lens getter setter
@@ -61,6 +65,7 @@ cell = lens getter setter
 
 eval :: [Instr] -> Eval ()
 eval = mapM_ evalOne
+{-# INLINE eval #-}
 
 evalOne :: Instr -> Eval ()
 evalOne Next            = cursor += 1
@@ -79,3 +84,4 @@ evalOne Put = do
   val <- use cell
   lift . tell $ BS.cons (chr $ fromEnum val) BS.empty
 evalOne Null = pure ()
+{-# INLINE evalOne #-}
